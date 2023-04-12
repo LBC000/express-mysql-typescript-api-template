@@ -24,16 +24,20 @@
 
 ## Table of Contents
 
-* [About the Project](#about-the-project)
-  * [Built With](#built-with)
-* [Getting Started](#getting-started)
-  * [Enviroment Variables](enviroment-variables)
-  * [Local](#local)
-  * [Production](#production)
-    * [Migration](#migration)
-    * [Deployment](#deployment)
-    * [Run](#run)
-* [TODO](#todo)
+- [Table of Contents](#table-of-contents)
+- [About The Project](#about-the-project)
+  - [Built With](#built-with)
+- [Enviroment Variables:](#enviroment-variables)
+- [Getting started:](#getting-started)
+    - [Local](#local)
+    - [Production](#production)
+      - [Migration](#migration)
+      - [Deployment](#deployment)
+      - [Run](#run)
+    - [Test](#test)
+      - [Unit tests](#unit-tests)
+    - [learn from](#learn-from)
+- [TODO:](#todo)
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -101,6 +105,9 @@ No need to run migration in local as db sync is true.
     yarn test
 
 PS: using `pm2` for production environment
+
+#### learn from
+https://github.com/a7urag/node-express-mysql-typescript-api-boilerplate
 
 ## TODO:
 - [x] Use yarn instead of npm
