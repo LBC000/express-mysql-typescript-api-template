@@ -47,6 +47,8 @@
     "bcrypt": "^5.0.0",
     "body-parser": "^1.18.3",
     "celebrate": "13.0.3",
+    "cors": "^2.8.5",
+    "crypto-js": "^4.1.1",
     "dotenv": "10.0.0",
     "express": "4.17.1",
     "express-jwt": "^6.0.0",
@@ -55,6 +57,8 @@
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.9.1",
     "mysql": "^2.16.0",
+    "nanoid": "^4.0.2",
+    "nodejs-jsencrypt": "^3.0.0-rc.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.15",
     "winston": "^3.2.1"

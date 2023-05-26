@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+    ></script>
+
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/axios@1.4.0/dist/axios.min.js"
+    ></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+
+    <!-- <script src="https://cdn.bootcdn.net/ajax/libs/crypto-js/4.1.1/crypto-js.js"></script> -->
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.js"
+    ></script>
+
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/2.3.1/jsencrypt.min.js"
+    ></script>
+  </head>
+  <body>
+    <p>
+      <span style="display: inline-block; width: 70px;">用户名：</span
+      ><input id="user" type="text" />
+    </p>
+    <p>
+      <span style="display: inline-block; width: 70px;">密码：</span
+      ><input id="pw" type="text" />
+    </p>
+
+    <p>
+      <button id="submit">提交</button>
+    </p>
+
+    <script>
+      // 随机生成字符串
+      function generateRandomString(length) {
+        var result = "";
+        var characters =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for (var i = 0; i < length; i++) {
+          result += characters.charAt(
+            Math.floor(Math.random() * characters.length)
+          );
+        }
+
+        return result;
+      }
+
+      function Decrypt(keyEncrypt = "", word = "") {
+        const key = CryptoJS.enc.Utf8.parse(keyEncrypt); //十六位十六进制数作为密钥
+        const iv = CryptoJS.enc.Utf8.parse(keyEncrypt); //十六位十六进制数作为密钥偏移量
+        let encryptedHexStr = CryptoJS.enc.Hex.parse(word);
+        let srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
+        let decrypt = CryptoJS.AES.decrypt(srcs, key, {
+          iv: iv,
+          mode: CryptoJS.mode.CBC,
+          padding: CryptoJS.pad.Pkcs7,
+        });
+        let decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+        return decryptedStr.toString();
+      }
+
+      let pubkey = `-----BEGIN PUBLIC KEY-----
+      MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCfv5QESxQmTsu9kXESRuWBAY11
+      AViOHy4bUwenXu4BZaSv1HQSD3h+ELjI+F2f076wz4zG22KQn1ikYSmkN5qZ9WKQ
+      aQzTwJavadSaDq/VSAahS2jlssNtAWQHYV43nGU2OAjXwGQznDFhtQmuWQeXtuMz
+      w+EGGSNtm7Q3zGSIYwIDAQAB
+      -----END PUBLIC KEY-----`;
+
+      const submit = () => {
+        let user = $("#user").val();
+        let pw = $("#pw").val();
+
+        // json数据
+        let data = {
+          user,
+          pw,
+        };
+
+        //**加密**
+        var encrypt = new JSEncrypt();
+        //设置公钥
+        encrypt.setPublicKey(pubkey);
+
+        let uuidAES = generateRandomString(16);
+        let uuidEncrypt = generateRandomString(16);
+        data.uuid = uuidEncrypt;
+        data.uuidAES = uuidAES;
+
+        // 请求响应时间限制在2分钟
+        let in5Minutes = new Date(new Date().getTime() + 2 * 60 * 1000);
+        Cookies.set(uuidEncrypt, uuidAES, {
+          expires: in5Minutes,
+        });
+
+        console.log(uuidEncrypt);
+        let jsonData = JSON.stringify(data);
+        //用公钥加密明文
+        var encrypted = encrypt.encrypt(jsonData);
+
+        axios({
+          method: "post",
+          url: "http://localhost:6501/api/test/rsa",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: {
+            jsonData: encrypted,
+          },
+        })
+          .then(function (response) {
+            let uuidAES = Cookies.get(response.data.data.uuid);
+
+            console.log(CryptoJS, "CryptoJS");
+            let resDecrypt = Decrypt(uuidAES, response.data.data.data);
+            console.log(
+              response.data.data,
+
+              "uuidAES=>",
+              uuidAES,
+
+              "解密了=>",
+              resDecrypt
+            );
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        console.log(user, pw, encrypted, "测试111");
+      };
+
+      $("#submit").click(submit);
+    </script>
+  </body>
+</html>

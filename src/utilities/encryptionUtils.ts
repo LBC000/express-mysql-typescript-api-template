@@ -1,11 +1,11 @@
-import application from '../constants/application';
+import application from "../constants/application";
 
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const generateHash = async (
   password: string,
-  saltRounds: number,
+  saltRounds: number
 ): Promise<string> =>
   new Promise((resolve, reject) => {
     bcrypt.hash(password, saltRounds, (err: any, hash: string) => {
@@ -16,10 +16,7 @@ const generateHash = async (
     });
   });
 
-const verifyHash = async (
-  password: string,
-  hash: string,
-): Promise<boolean> =>
+const verifyHash = async (password: string, hash: string): Promise<boolean> =>
   new Promise((resolve, reject) => {
     bcrypt.compare(password, hash, (err: any, result: string) => {
       if (result) {
@@ -38,7 +35,7 @@ const generateCookie = async (key: string, value: string) => {
 };
 
 const verifyCookie = async (token: string): Promise<any> =>
-  new Promise(resolve => {
+  new Promise((resolve) => {
     jwt.verify(
       token,
       application.env.authSecret,
@@ -48,7 +45,7 @@ const verifyCookie = async (token: string): Promise<any> =>
         } else {
           resolve(decoded);
         }
-      },
+      }
     );
   });
 
