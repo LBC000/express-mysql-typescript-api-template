@@ -125,7 +125,12 @@
             let uuidAES = Cookies.get(response.data.data.uuid);
 
             console.log(CryptoJS, "CryptoJS");
-            let resDecrypt = Decrypt(uuidAES, response.data.data.data);
+            let resDecrypt = Decrypt("123", response.data.data.data);
+
+            if (resDecrypt) {
+              Cookies.remove(response.data.data.uuid);
+            }
+
             console.log(
               response.data.data,
 
