@@ -11,6 +11,7 @@
     "serve": "node dist/index.js",
     "watch-node": "nodemon",
     "watch-ts": "tsc -w",
+    "ts-node": "ts-node ./src/index.ts",
     "migration:generate": "ts-node ./node_modules/.bin/typeorm migration:generate",
     "migration:run": "ts-node ./node_modules/.bin/typeorm migration:run"
   },
